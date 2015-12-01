@@ -1,43 +1,44 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 using System.Collections;
 
-public class HPBar : MonoBehaviour {
-    public Material red;
-    public Material cyan;
+public class HPBar : MonoBehaviour
+{
+
     private bool isPlaying { get; set; }
-
-
     private Player player;
     private float hp;
+    private Image circularSlider;
     private AudioSource audio;
-    private Renderer renderer;
 
-	// Use this for initialization
-	void Start () {
+    // Use this for initialization
+    void Start()
+    {
         player = GameObject.FindWithTag("Player").GetComponent<Player>();
-        renderer = gameObject.GetComponent<Renderer>();
         audio = gameObject.GetComponent<AudioSource>();
-        renderer.material = red;
+        circularSlider = gameObject.GetComponent<Image>();
         isPlaying = false;
-	}
-	
-	// Update is called once per frame
-	void Update () {
-        hp = player.power / 100;
-        if (hp < 0.3 && !isPlaying)
-        {
-            renderer.material = cyan;
-            audio.Play();
-            isPlaying = true;
-        }
-        else if(hp > 0.3 && audio.isPlaying)
-        {
-            renderer.material = red;
-            audio.Stop();
-            isPlaying = false;
-        }
-        gameObject.transform.localScale = new Vector3(1, hp, 1);
-        gameObject.transform.localPosition = new Vector3(-1 + hp, 0, 0);
-	}
+    }
 
+    // Update is called once per frame
+    void Update()
+    {
+        if (player != null)
+        {
+            hp = player.power / 100;
+            if (hp < 0.3 && !isPlaying)
+            {
+                audio.Play();
+                circularSlider.material.color = new Color(0f, 0f, 1f, 0.5f);
+                isPlaying = true;
+            }
+            else if (hp > 0.3 && audio.isPlaying)
+            {
+                circularSlider.material.color = new Color(1f, 1f, 1f, 1f);
+                audio.Stop();
+                isPlaying = false;
+            }
+            circularSlider.fillAmount = hp / 2;
+        }
+    }
 }
